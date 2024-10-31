@@ -1,0 +1,64 @@
+import random
+import speech_recognition as sr
+
+# Define some responses
+responses = {
+    "hello": ["Hello!", "Hi there!", "Hey!"],
+    "how _are_you": ["I'm doing well, thank you!", "I'm good, thanks for asking.", "All good on this side."],
+    "bye": ["Goodbye!", "See you later!", "Bye! Take care."],
+    "random": ["Interesting!", "Tell me more.", "I see.", "Fascinating!"]
+}
+
+def greet ():
+    return random. Choice (responses["hello"])
+
+def ask_how_are_you ():
+    return random. Choice (responses["how_are_you"])
+
+def say_goodbye ():
+    return random. Choice (responses["bye"])
+
+def respond_to_input(input_text):
+    if "hello" in input_text. Lower ():
+        return greet ()
+    elif "how are you" in input_text. Lower ():
+        return ask_how_are_you ()
+    elif "bye" in input_text. Lower ():
+        return say_goodbye ()
+    else:
+        return random. Choice (responses["random"])
+
+def recognize_speech ():
+    recognizer = sr. Recognizer ()
+    with sr. Microphone () as source:
+        print("Listening...")
+        recognizer. adjust_for_ambient_noise (source, duration=1)
+        audio = recognizer.listen(source)
+
+    try:
+        print("Recognizing...")
+        text = recognizer.recognize_google(audio)
+        print("You said:", text)
+        return text
+    except sr.UnknownValueError:
+        print("Sorry, I couldn't understand what you said.")
+        return ""
+    except sr.RequestError as e:
+        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        return ""
+
+def main():
+    print("Welcome to Smartypants! Say something or type 'quit' to exit.")
+    while True:
+        user_input = input("> ")
+        if user_input.lower() == 'quit':
+            print(say_goodbye())
+            break
+        else:
+            if user_input.strip() == "":
+                user_input = recognize_speech()
+            response = respond_to_input(user_input)
+            print(response)
+
+if __name__ == "__main__":
+    main()
